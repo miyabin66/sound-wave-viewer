@@ -1,14 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { Mesh, MeshBasicMaterial, OrthographicCamera, PlaneGeometry, Scene, WebGLRenderer } from 'three';
 
 const useIndex = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleResize = (camera: PerspectiveCamera, renderer: WebGLRenderer) => {
+  const handleResize = (renderer: WebGLRenderer) => {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
     renderer.setSize(width, height);
   };
 
@@ -19,15 +17,32 @@ const useIndex = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 1, 2000);
     const renderer = new WebGLRenderer({ canvas, antialias: true });
+    const camera = new OrthographicCamera(
+      -1, // left
+       1, // right
+       1, // top
+      -1, // bottom
+      -1, // near,
+       1, // far
+    );
+    const scene = new Scene();
+    const plane = new PlaneGeometry(2, 2);
+    const material = new MeshBasicMaterial({
+        color: 'red',
+    });
+    scene.add(new Mesh(plane, material));
 
-    renderer.setClearColor('#000000');
     renderer.setSize(width, height);
-    renderer.render(scene, camera);
+    
+    const render = () => {
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    };
 
-    window.addEventListener('resize', () => handleResize(camera, renderer), false);
+    requestAnimationFrame(render);
+
+    window.addEventListener('resize', () => handleResize(renderer), false);
 
     return () => window.removeEventListener('resize', () => handleResize);
   }, []);
