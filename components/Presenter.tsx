@@ -14,11 +14,11 @@ const canvasStyle = css`
 `;
 
 const Presenter = () => {
-  const { onCanvasLoaded } = useIndex();
+  const { canvasRef } = useIndex();
 
   return (
     <div css={indexContainer}>
-      <canvas css={canvasStyle} ref={onCanvasLoaded} />
+      <canvas css={canvasStyle} ref={canvasRef} />
     </div>
   );
 };
