@@ -1,9 +1,9 @@
-import {css} from "@emotion/react"
-import useIndex from '~/components/hooks/useIndex'
+import {css} from "@emotion/react";
+import useIndex from '~/components/hooks/useIndex';
 
 const indexContainer = css`
   position: relative;
-`
+`;
 
 const canvasStyle = css`
   position: absolute;
@@ -11,16 +11,16 @@ const canvasStyle = css`
   left: 0;
   width: 100vw;
   height: 100vh;
-`
+`;
 
 const Presenter = () => {
-  const {} = useIndex
+  const { onCanvasLoaded } = useIndex();
 
   return (
     <div css={indexContainer}>
-      <canvas css={canvasStyle} />
+      <canvas css={canvasStyle} ref={onCanvasLoaded} />
     </div>
   )
 }
 
-export default Presenter
+export default Presenter;
