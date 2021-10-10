@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Mesh, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial, Vector3, WebGLRenderer } from 'three';
 
 const useIndex = () => {
@@ -21,10 +21,12 @@ const useIndex = () => {
     }
   `;
 
-  const uniforms = {
-    iTime: { value: 0 },
-    iResolution:  { value: new Vector3() },
-  };
+  const uniforms = useMemo(() => {
+    return {
+      iTime: { value: 0 },
+      iResolution:  { value: new Vector3() },
+    }
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -65,7 +67,7 @@ const useIndex = () => {
     window.addEventListener('resize', () => handleResize(renderer), false);
 
     return () => window.removeEventListener('resize', () => handleResize);
-  }, []);
+  }, [fragmentShader, uniforms]);
 
   return {
     canvasRef,
