@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Scene } from "three";
+import { PerspectiveCamera, Scene } from 'three';
 
 const useIndex = () => {
   const onCanvasLoaded = (canvas: HTMLCanvasElement) => {
@@ -10,11 +10,11 @@ const useIndex = () => {
     const scene = new Scene();
     const camera = new PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 
-  }
+  };
 
   return {
     onCanvasLoaded
-  }
-}
+  };
+};
 
 export default useIndex;

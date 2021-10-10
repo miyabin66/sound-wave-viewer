@@ -1,4 +1,4 @@
-import {css} from "@emotion/react";
+import {css} from '@emotion/react';
 import useIndex from '~/components/hooks/useIndex';
 
 const indexContainer = css`
@@ -20,7 +20,7 @@ const Presenter = () => {
     <div css={indexContainer}>
       <canvas css={canvasStyle} ref={onCanvasLoaded} />
     </div>
-  )
-}
+  );
+};
 
 export default Presenter;
