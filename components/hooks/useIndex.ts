@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Mesh, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial, Vector3, WebGLRenderer } from 'three';
+import { Sound } from '~/utils/ts/Howler';
 
 const useIndex = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleResize = (renderer: WebGLRenderer) => {
     const width = window.innerWidth;
@@ -29,7 +31,10 @@ const useIndex = () => {
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !buttonRef.current) return;
+
+    new Sound();
+
     const canvas = canvasRef.current;
 
     const width = window.innerWidth;
@@ -66,11 +71,21 @@ const useIndex = () => {
 
     window.addEventListener('resize', () => handleResize(renderer), false);
 
-    return () => window.removeEventListener('resize', () => handleResize);
+    return () => {
+      window.removeEventListener('resize', () => handleResize)
+      material.dispose();
+    };
   }, [fragmentShader, uniforms]);
+
+  const onPlayAudioHandler = useCallback(() => {
+    const sound = Sound.instance
+    sound.playAudioHandler()
+  }, [])
 
   return {
     canvasRef,
+    buttonRef,
+    onPlayAudioHandler,
   };
 };
 
