@@ -5,7 +5,7 @@ const indexContainer = css`
   position: relative;
 `;
 
-const canvasStyle = css`
+const canvas = css`
   position: absolute;
   top: 0;
   left: 0;
@@ -18,7 +18,7 @@ const Presenter = () => {
 
   return (
     <div css={indexContainer}>
-      <canvas css={canvasStyle} ref={canvasRef} />
+      <canvas css={canvas} ref={canvasRef} />
     </div>
   );
 };
