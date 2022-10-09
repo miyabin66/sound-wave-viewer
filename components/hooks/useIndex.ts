@@ -12,9 +12,7 @@ const useIndex = () => {
 
     new Sound();
 
-    const webgl = new WebGL()
-
-    webgl.canvas = canvasRef.current
+    const webgl = new WebGL({ canvas: canvasRef.current })
 
     webgl.init()
 

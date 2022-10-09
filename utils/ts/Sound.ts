@@ -8,8 +8,7 @@ export class Sound {
   private _analyserNode: AnalyserNode | null
   private _freqs: Uint8Array | null
   private _gainNode: GainNode | null
-  private _webgl: WebGL
-  private _drawTimer: number | null
+  private _drawTimer: number
 
   constructor() {
     this._sound = new Howl({
@@ -19,8 +18,7 @@ export class Sound {
     this._analyserNode = null
     this._freqs = null
     this._gainNode = null
-    this._webgl = WebGL.instance
-    this._drawTimer = null
+    this._drawTimer = 0
   }
 
   // インスタンス取得
@@ -51,8 +49,10 @@ export class Sound {
     this._sound.pause(this._playingSound);
     this._playingSound = undefined
 
-    if(this._drawTimer){
-      window.cancelAnimationFrame(this._drawTimer);
+    const webgl = WebGL.instance
+
+    if(webgl.drawTimer){
+      window.cancelAnimationFrame(webgl.drawTimer);
       return;
     }
   }
@@ -76,9 +76,8 @@ export class Sound {
     this._analyserNode.getByteFrequencyData(this._freqs);
   }
 
-  private _drowAudioVisualizer(time = 0) {
-    this._webgl.render(time);
-
-    this._drawTimer = requestAnimationFrame(this._drowAudioVisualizer.bind(this));
+  private _drowAudioVisualizer() {
+    const webgl = WebGL.instance
+    webgl.render()
   }
 }

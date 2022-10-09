@@ -4,9 +4,6 @@ export class WebGL {
   private static _instance: WebGL
 
   private _canvas: HTMLCanvasElement | null
-  public set canvas(value: HTMLCanvasElement) {
-    this._canvas = value
-  }
 
   private _uniforms: { [uniform: string]: IUniform<any> }
   private _scene: Scene
@@ -14,8 +11,13 @@ export class WebGL {
   private _material: ShaderMaterial | null
   private _camera: OrthographicCamera
 
-  constructor() {
-    this._canvas = null
+  private _drawTimer: number
+  public get drawTimer(): number {
+    return this._drawTimer
+  }
+
+  constructor({ canvas }: { canvas: HTMLCanvasElement }) {
+    this._canvas = canvas
     this._uniforms = {
       iTime: { value: 0 },
       iResolution:  { value: new Vector3() },
@@ -31,6 +33,7 @@ export class WebGL {
       -1, // near,
        1, // far
     );
+    this._drawTimer = 0;
   }
 
   private _handleResize() {
@@ -51,8 +54,6 @@ export class WebGL {
   }
 
   public init() {
-    if (!this._canvas) return
-
     const fragmentShader = `
       uniform vec3 iResolution;
       uniform float iTime;
@@ -79,13 +80,25 @@ export class WebGL {
     window.addEventListener('resize', this._handleResize, { passive: true });
   }
 
-  public render(time: number) {
+  public render() {
+    console.log(this._canvas)
     if (!this._canvas || !this._renderer) return
 
-    time *= 0.001;
-    this._uniforms.iResolution.value.set(this._canvas.width, this._canvas.height, 1);
-    this._uniforms.iTime.value = time;
-    this._renderer.render(this._scene, this._camera);
+    const canvas = this._canvas;
+    const uniforms = this._uniforms;
+    const renderer = this._renderer;
+    const scene = this._scene;
+    const camera = this._camera;
+
+    const drowing = (time: number) => {
+      time *= 0.001;
+      uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
+      uniforms.iTime.value = time;
+      renderer.render(scene, camera);
+
+      requestAnimationFrame(drowing)
+    }
+    this._drawTimer = requestAnimationFrame(drowing);
   };
 
   public reset() {
