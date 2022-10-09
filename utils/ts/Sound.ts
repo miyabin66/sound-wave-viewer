@@ -1,4 +1,5 @@
 import { Howl, Howler } from "howler"
+import { WebGL } from "~/utils/ts/WebGL"
 
 export class Sound {
   private static _instance: Sound
@@ -7,6 +8,8 @@ export class Sound {
   private _analyserNode: AnalyserNode | null
   private _freqs: Uint8Array | null
   private _gainNode: GainNode | null
+  private _webgl: WebGL
+  private _drawTimer: number | null
 
   constructor() {
     this._sound = new Howl({
@@ -16,6 +19,8 @@ export class Sound {
     this._analyserNode = null
     this._freqs = null
     this._gainNode = null
+    this._webgl = WebGL.instance
+    this._drawTimer = null
   }
 
   // インスタンス取得
@@ -45,6 +50,11 @@ export class Sound {
   private stopAudio() {
     this._sound.pause(this._playingSound);
     this._playingSound = undefined
+
+    if(this._drawTimer){
+      window.cancelAnimationFrame(this._drawTimer);
+      return;
+    }
   }
 
   private _initAudioVisualizer() {
@@ -57,10 +67,6 @@ export class Sound {
     Howler.masterGain.connect(this._analyserNode);
     this._analyserNode.connect(this._gainNode);
     this._gainNode.connect(Howler.ctx.destination);
-  }
-
-  private _drowAudioVisualizer() {
-    if (!this._analyserNode || !this._freqs) return
 
     // 0~1 0に近い方が描画がスムーズになる
     this._analyserNode.smoothingTimeConstant = 0.1;
@@ -68,5 +74,11 @@ export class Sound {
     this._analyserNode.fftSize = 1024;
     // 周波数領域の波形データを引数の配列に格納する
     this._analyserNode.getByteFrequencyData(this._freqs);
+  }
+
+  private _drowAudioVisualizer(time = 0) {
+    this._webgl.render(time);
+
+    this._drawTimer = requestAnimationFrame(this._drowAudioVisualizer.bind(this));
   }
 }
