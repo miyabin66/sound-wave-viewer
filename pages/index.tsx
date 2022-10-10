@@ -1,15 +1,8 @@
-import {IndexContextProvider} from '~/contexts/IndexContext'
-import DefaultLayout from "~/layouts/DefaultLayout"
-import MainIndex from '~/components/Index'
+import type { NextPage } from 'next'
+import Container from '~/components/index/Container'
 
-const Index = () => {
-  return (
-    <IndexContextProvider>
-      <DefaultLayout>
-        <MainIndex />
-      </DefaultLayout>
-    </IndexContextProvider>
-  )
+const Home: NextPage = () => {
+  return <Container />
 }
 
-export default Index
+export default Home
